@@ -1,0 +1,34 @@
+{
+  "name": "onlyphp/simple-queue",
+  "version": "1.0.0",
+  "description": "A powerful and flexible job processing system for PHP applications, supporting both CodeIgniter 3 and Laravel frameworks. This package allows you to easily dispatch jobs with various types of processing, including closures, static class methods, object methods, global functions, and invokable classes.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "faizzul95",
+          "role": "Developer"
+      }
+  ],
+  "require": {
+      "php": ">=7.4"
+  },
+  "autoload": {
+      "psr-4": {
+        "OnlyPHP\\": "src/"
+      }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "keywords": [
+      "queue",
+      "job-queue",
+      "database-queue",
+      "framework-agnostic",
+      "laravel",
+      "codeigniter",
+      "mysql",
+      "mssql",
+      "oracle"
+  ]
+}
