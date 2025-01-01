@@ -5,7 +5,8 @@ namespace OnlyPHP\SimpleQueue;
 use OnlyPHP\Database\Interface\DatabaseInterface;
 use OnlyPHP\Database\TableDefinition\JobSchema;
 use OnlyPHP\Database\TableDefinition\FailedJobSchema;
-use OnlyPHP\Helpers\SerializableClosure;
+
+use function Opis\Closure\{serialize, unserialize};
 
 use RuntimeException;
 use Exception;

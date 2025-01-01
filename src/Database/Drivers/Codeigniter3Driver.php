@@ -3,20 +3,21 @@
 namespace OnlyPHP\Database\Drivers;
 
 use OnlyPHP\Database\Interface\DatabaseInterface;
-use CI_DB;
 
 class Codeigniter3Driver implements DatabaseInterface
 {
-    private ?CI_DB $connection = null;
+    private $CI = null;
+    private $connection = null;
 
     /**
      * Constructor
      *
-     * @param \CI_DB $db CodeIgniter database instance
+     * @param $db CodeIgniter database instance
      */
-    public function __construct(\CI_DB $db)
+    public function __construct($db)
     {
         $this->connection = $db;
+        $this->CI = &get_instance(); // Get the global CI instance
     }
 
     public function connect(): void
@@ -119,6 +120,7 @@ class Codeigniter3Driver implements DatabaseInterface
         }
 
         $fields = [];
+        $pk = null;
         foreach ($columns as $name => $definition) {
             $type = $definition['type'];
             $constraint = $definition['constraint'] ?? '';
@@ -137,15 +139,28 @@ class Codeigniter3Driver implements DatabaseInterface
             if (isset($default)) {
                 $fields[$name]['default'] = $default;
             }
+
+            if ($auto_increment) {
+                $pk = $name;
+            }
         }
 
-        $this->connection->db_forge->add_field($fields);
-        return $this->connection->db_forge->create_table($tableName, true);
+        $this->CI->load->dbforge();
+        $dbforge = $this->CI->dbforge;
+
+        if (!empty($pk)) {
+            $dbforge->add_key($pk, TRUE);
+        }
+
+        $dbforge->add_field($fields);
+        return $dbforge->create_table($tableName, FALSE, ['ENGINE' => 'InnoDB', 'COLLATE' => 'utf8mb4_general_ci']);
     }
 
     public function dropTable(string $tableName): bool
     {
-        return $this->connection->db_forge->drop_table($tableName, true);
+        $this->CI->load->dbforge();
+        $dbforge = $this->CI->dbforge;
+        return $dbforge->drop_table($tableName, TRUE);
     }
 
     public function truncateTable(string $tableName): bool
@@ -154,11 +169,11 @@ class Codeigniter3Driver implements DatabaseInterface
     }
 
     /**
-     * Get the underlying CI_DB connection
+     * Get the underlying connection
      *
-     * @return \CI_DB|null
+     * @return object|null
      */
-    public function getConnection(): ?\CI_DB
+    public function getConnection(): ?object
     {
         return $this->connection;
     }

@@ -2,6 +2,25 @@
 
 A framework-agnostic queue system for PHP that seamlessly integrates with multiple database systems and frameworks. This package offers Laravel-inspired queue functionality without the need for cron jobs, enabling you to effortlessly dispatch jobs with various processing types, including closures, static class methods, object methods, global functions, and invokable classes. This package supports databases such as PDO, MySQL, MSSQL, Oracle and is compatible with CodeIgniter 3, CodeIgniter 4, and Laravel framework.
 
+## ⚠️ Warning
+
+<strong>DO NOT USE THIS PACKAGE</strong>.
+
+This package is under active development and may contain critical bugs. It is primarily intended for personal use and testing within my own projects.
+
+This version has not undergone rigorous testing and may be unstable or unreliable.
+
+🛠️ Primary Focus (Testing & Development):
+- CodeIgniter 3 
+
+⏭️ Supported (Experimental):
+- PDO
+- MySQL
+- MSSQL
+- Oracle
+- CodeIgniter 4
+- Laravel
+
 ## ✨ Features
 
 - 🚀 No cron jobs required - automatic worker process management
@@ -15,7 +34,7 @@ A framework-agnostic queue system for PHP that seamlessly integrates with multip
 
 ## 📝 Requirements
 
-- PHP >= 7.4
+- PHP >= 8.0
 
 ## 🔧 Installation
 
@@ -313,3 +332,19 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+## 🏷️ Changelog
+
+<details> 
+<summary>Click to view the changelog</summary>
+
+### v1.0.0
+*  Initial release.
+
+### v1.0.1
+*  Removed `SerializableClosure` helper.
+*  Fixed CodeIgniter 3 table creation issues.
+*  Added support for `MY_Model` as a custom model for CodeIgniter 3.
+*  Added `opis/closure` library to support serializable closures.
+
+</details>

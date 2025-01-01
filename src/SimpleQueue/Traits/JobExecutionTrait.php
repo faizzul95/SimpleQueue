@@ -2,6 +2,8 @@
 
 namespace OnlyPHP\SimpleQueue\Traits;
 
+use function Opis\Closure\{unserialize};
+
 trait JobExecutionTrait
 {
     /**

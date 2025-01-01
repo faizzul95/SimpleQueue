@@ -17,7 +17,7 @@ use OnlyPHP\Database\Drivers\Codeigniter3Driver;
 use OnlyPHP\Database\Drivers\Codeigniter4Driver;
 use OnlyPHP\Database\Drivers\LaravelDriver;
 
-use OnlyPHP\Helpers\SerializableClosure;
+use function Opis\Closure\{serialize};
 
 use RuntimeException;
 use Exception;
@@ -96,8 +96,8 @@ class JobProcessor
         // CodeIgniter 3 Detection
         if (
             is_object($connection) && (
-                get_class($connection) === 'CI_DB' ||
-                strpos(get_class($connection), 'CI_DB_') === 0
+                (get_class($connection) === 'CI_DB' || strpos(get_class($connection), 'CI_DB_') === 0) ||
+                (get_class($connection) === 'MY_DB' || strpos(get_class($connection), 'MY_DB_') === 0)
             )
         ) {
             $this->dbType = 'codeigniter3';
@@ -303,21 +303,27 @@ class JobProcessor
      */
     private function prepareJob(string $uuid): array
     {
-        return [
-            'uuid' => $uuid,
-            'name' => $this->name ?: get_class($this->callable),
-            'callable_type' => $this->getCallableType(),
-            'callable' => $this->serializeCallable(),
-            'namespace' => $this->getCallableNamespace(),
-            'object_instance' => $this->serializeObjectInstance(),
-            'path_files' => $this->includeFile,
-            'params' => serialize($this->params),
-            'status' => 'pending',
-            'priority' => $this->priority,
-            'timeout' => $this->timeout,
-            'max_retries' => $this->maxRetries,
-            'retry_delay' => $this->retryDelay
-        ];
+        try {
+            return [
+                'uuid' => $uuid,
+                'name' => $this->name ?: get_class($this->callable),
+                'callable_type' => $this->getCallableType(),
+                'callable' => $this->serializeCallable(),
+                'namespace' => $this->getCallableNamespace(),
+                'object_instance' => $this->serializeObjectInstance(),
+                'path_files' => $this->includeFile,
+                'params' => serialize($this->params),
+                'status' => 'pending',
+                'priority' => $this->priority,
+                'timeout' => $this->timeout,
+                'max_retries' => $this->maxRetries,
+                'retry_delay' => $this->retryDelay
+            ];
+        } catch (\Exception $e) {
+            echo "Error in prepareJob: " . $e->getMessage() . "\n" . PHP_EOL;;
+            echo "Stack trace: " . $e->getTraceAsString() . "\n" . PHP_EOL;;
+            throw $e;
+        }
     }
 
     /**
@@ -394,11 +400,6 @@ class JobProcessor
      */
     private function serializeCallable(): string
     {
-        if ($this->callable instanceof \Closure) {
-            return serialize(new SerializableClosure($this->callable));
-        } elseif (is_array($this->callable)) {
-            return serialize($this->callable);
-        }
         return serialize($this->callable);
     }
 
